@@ -66,3 +66,7 @@ async def mcp_endpoint(request: Request, authorization: str = Header(None)):
         return JSONResponse(content={"result": "+916300670761"})
 
     return JSONResponse(content={"error": "Unknown tool"}, status_code=400)
+
+@app.post("/mcp")
+async def mcp_endpoint_alias(request: Request, authorization: str = Header(None)):
+    return await mcp_endpoint(request, authorization)

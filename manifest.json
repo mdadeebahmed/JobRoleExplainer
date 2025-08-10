@@ -1,0 +1,21 @@
+{
+  "name": "Job Role Explainer",
+  "version": "1.0.0",
+  "description": "Explains any job title with responsibilities, skills, and salary info.",
+  "tools": [
+    {
+      "name": "explain_job_role",
+      "description": "Given a job title, returns an explanation, key responsibilities, skills, and salary range.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "job_title": {
+            "type": "string",
+            "description": "The job title to explain"
+          }
+        },
+        "required": ["job_title"]
+      }
+    }
+  ]
+}

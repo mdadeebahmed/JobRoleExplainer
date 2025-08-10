@@ -63,6 +63,6 @@ async def mcp_endpoint(request: Request, authorization: str = Header(None)):
 
     if tool == "validate":
         # Return your phone number in required format
-        return JSONResponse(content={"result": "+919163006707"})
+        return JSONResponse(content={"result": "+916300670761"})
 
     return JSONResponse(content={"error": "Unknown tool"}, status_code=400)

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Header, HTTPException
+from fastapi import FastAPI, Request, Header, HTTPException, Response
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -9,7 +9,7 @@ import os
 # CONFIG
 # -------------------
 openai.api_key = os.getenv("OPENAI_API_KEY")  # Make sure you set this in your environment
-API_TOKEN = "7f3a9b2d-e1c4-4d9f-8a62-3bcf0d5e7a1b"  # Replace with a strong token you create
+API_TOKEN = "abc123"  # Replace with a strong token you create
 
 app = FastAPI()
 
@@ -51,22 +51,33 @@ async def explain_job_role(req: JobRequest):
         return {"error": str(e)}
 
 # -------------------
-# MCP endpoint
+# MCP endpoint (POST only)
 # -------------------
-@app.post("/")
+@app.post("/mcp")
 async def mcp_endpoint(request: Request, authorization: str = Header(None)):
     if authorization != f"Bearer {API_TOKEN}":
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-    body = await request.json()
+    try:
+        body = await request.json()
+    except Exception:
+        return JSONResponse(content={"error": "Invalid JSON body"}, status_code=400)
+
     tool = body.get("tool")
 
     if tool == "validate":
-        # Return your phone number in required format
-        return JSONResponse(content={"result": "+916300670761"})
+        # Return your phone number in required format (country_code + number)
+        return JSONResponse(content={"result": "91XXXXXXXXXX"})
 
     return JSONResponse(content={"error": "Unknown tool"}, status_code=400)
 
-@app.post("/mcp")
-async def mcp_endpoint_alias(request: Request, authorization: str = Header(None)):
-    return await mcp_endpoint(request, authorization)
+# -------------------
+# MCP endpoint GET handler to respond with 405 Method Not Allowed
+# -------------------
+@app.get("/mcp")
+async def mcp_get():
+    return Response(
+        content="GET method not allowed on /mcp endpoint. Please use POST.",
+        status_code=405,
+        headers={"Allow": "POST"},
+    )
